@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "461109099262",
+    "project_id": "becky-s-kitchen-e-commerce",
+    "storage_bucket": "becky-s-kitchen-e-commerce.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:461109099262:android:0224b364e31a92a0be03af",
+        "android_client_info": {
+          "package_name": "com.example.beckyskitchen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "461109099262-qenup21sjdnjv3lvs5u1dfj08clt3b55.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.beckyskitchen",
+            "certificate_hash": "85fdc6b4ffe024c9ed39e740c43f33020763c65a"
+          }
+        },
+        {
+          "client_id": "461109099262-ejbeu2jrn8t94pr3rv6e994cb3a79n3p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCu7t0p3SA999kX_1_x3sgYDTAEpDDaVco"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "461109099262-ejbeu2jrn8t94pr3rv6e994cb3a79n3p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
