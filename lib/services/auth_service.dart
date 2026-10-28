@@ -1,15 +1,21 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
-  AuthService({FirebaseAuth? firebaseAuth, GoogleSignIn? googleSignIn})
-    : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
-      _googleSignIn = googleSignIn ?? GoogleSignIn.instance;
+  AuthService({
+    FirebaseAuth? firebaseAuth,
+    FirebaseFirestore? firestore,
+    GoogleSignIn? googleSignIn,
+  }) : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
+       _firestore = firestore ?? FirebaseFirestore.instance,
+       _googleSignIn = googleSignIn ?? GoogleSignIn.instance;
 
   final FirebaseAuth _firebaseAuth;
+  final FirebaseFirestore _firestore;
   final GoogleSignIn _googleSignIn;
   Future<void>? _googleInitialization;
 
@@ -21,6 +27,16 @@ class AuthService {
   }
 
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
+
+  Stream<bool> watchIsAdmin() {
+    final userId = currentUserId;
+    if (userId == null) return Stream.value(false);
+    return _firestore
+        .collection('admins')
+        .doc(userId)
+        .snapshots()
+        .map((document) => document.data()?['enabled'] == true);
+  }
 
   Future<UserCredential> register({
     required String username,

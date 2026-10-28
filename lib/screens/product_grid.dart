@@ -1,34 +1,79 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/cart_provider.dart';
-
 import '../models/product.dart';
+import '../providers/cart_provider.dart';
 import '../services/product_service.dart';
 
-class ProductGrid extends StatelessWidget {
-  const ProductGrid({super.key, this.productService = const ProductService()});
+class ProductGrid extends StatefulWidget {
+  const ProductGrid({
+    super.key,
+    this.productService = const ProductService(),
+    this.category,
+    this.query = '',
+    this.shrinkWrap = false,
+  });
 
   final ProductService productService;
+
+  /// Only show products in this category (null = all).
+  final String? category;
+
+  /// Only show products whose name or description contains this text.
+  final String query;
+
+  /// Set to true when the grid sits inside another scrolling list.
+  final bool shrinkWrap;
+
+  @override
+  State<ProductGrid> createState() => _ProductGridState();
+}
+
+class _ProductGridState extends State<ProductGrid> {
+  late final Stream<List<Product>> _stream =
+      widget.productService.watchProducts();
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Product>>(
-      stream: productService.watchProducts(),
+      stream: _stream,
       builder: (context, snap) {
         if (snap.hasError) {
           return Center(child: Text('Error: ${snap.error}'));
         }
         if (!snap.hasData) {
-          return const Center(child: CircularProgressIndicator());
+          return const Padding(
+            padding: EdgeInsets.all(32),
+            child: Center(child: CircularProgressIndicator()),
+          );
         }
 
-        final products = snap.data!;
+        final all = snap.data!;
+        final query = widget.query.trim().toLowerCase();
+        final products = all.where((p) {
+          final inCategory =
+              widget.category == null || p.category == widget.category;
+          final matchesQuery =
+              query.isEmpty ||
+              p.name.toLowerCase().contains(query) ||
+              p.description.toLowerCase().contains(query);
+          return inCategory && matchesQuery;
+        }).toList();
+
         if (products.isEmpty) {
-          return const Center(child: Text('No products yet'));
+          return Padding(
+            padding: const EdgeInsets.all(32),
+            child: Center(
+              child: Text(all.isEmpty ? 'No products yet' : 'No products found'),
+            ),
+          );
         }
 
         return GridView.builder(
+          shrinkWrap: widget.shrinkWrap,
+          physics: widget.shrinkWrap
+              ? const NeverScrollableScrollPhysics()
+              : null,
           padding: const EdgeInsets.only(bottom: 20),
           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
             maxCrossAxisExtent: 280,
