@@ -77,8 +77,8 @@ flutter doctor
 ### 1. Clone the repository
 
 ```powershell
-git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
-cd YOUR_REPOSITORY
+git clone https://github.com/meowloaf/beckyskitchen.git
+cd beckyskitchen
 flutter pub get
 ```
 
@@ -136,10 +136,10 @@ supabase db push
 ### Set backend secrets
 
 ```powershell
-supabase secrets set SUPABASE_URL="https://YOUR_PROJECT_ID.supabase.co"
-supabase secrets set SUPABASE_SERVICE_ROLE_KEY="YOUR_SUPABASE_SERVICE_ROLE_KEY"
-supabase secrets set XENDIT_SECRET_KEY="YOUR_XENDIT_SECRET_KEY"
-supabase secrets set XENDIT_CALLBACK_TOKEN="YOUR_XENDIT_CALLBACK_TOKEN"
+supabase secrets set SUPABASE_URL=""
+supabase secrets set SUPABASE_SERVICE_ROLE_KEY=""
+supabase secrets set XENDIT_SECRET_KEY=""
+supabase secrets set XENDIT_CALLBACK_TOKEN=""
 ```
 
 The `XENDIT_CALLBACK_TOKEN` must match the verification token configured in the Xendit webhook settings.
