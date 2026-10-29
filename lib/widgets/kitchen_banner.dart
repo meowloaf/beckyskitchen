@@ -107,34 +107,6 @@ class KitchenBanner extends StatelessWidget {
                           ],
                         ),
                       ),
-                      if (!narrow) ...[
-                        const SizedBox(width: 12),
-                        Container(
-                          width: 116,
-                          height: 132,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(58),
-                            border: Border.all(
-                              color: const Color(0xFFFFD700),
-                              width: 4,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.16),
-                                blurRadius: 18,
-                                offset: const Offset(0, 8),
-                              ),
-                            ],
-                          ),
-                          clipBehavior: Clip.antiAlias,
-                          child: Image.asset(
-                            'assets/images/beckys_kitchen_logo.png',
-                            fit: BoxFit.contain,
-                            semanticLabel: "Becky's Kitchen logo",
-                          ),
-                        ),
-                      ],
                     ],
                   ),
                 ),

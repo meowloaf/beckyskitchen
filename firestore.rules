@@ -50,6 +50,9 @@ service cloud.firestore {
             'total',
             'currency',
             'status',
+            'paymentMethod',
+            'paymentStatus',
+            'xenditInvoiceId',
             'createdAt'
           ])
           && data.keys().hasOnly([
@@ -62,6 +65,9 @@ service cloud.firestore {
             'total',
             'currency',
             'status',
+            'paymentMethod',
+            'paymentStatus',
+            'xenditInvoiceId',
             'createdAt'
           ])
           && data.userId == request.auth.uid
@@ -77,6 +83,10 @@ service cloud.firestore {
           && data.total >= 0
           && data.currency == 'PHP'
           && data.status == 'pending'
+          && data.paymentMethod in ['online', 'pay_at_store']
+          && data.paymentStatus ==
+              (data.paymentMethod == 'online' ? 'pending' : 'unpaid')
+          && data.xenditInvoiceId is string
           && data.createdAt == request.time;
     }
 
@@ -105,6 +115,16 @@ service cloud.firestore {
             resource.data.status,
             request.resource.data.status
           );
+      allow update: if isAdmin()
+          && resource.data.paymentMethod == 'pay_at_store'
+          && request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly([
+                'paymentStatus',
+                'paymentPaidAt',
+                'updatedAt'
+              ])
+          && request.resource.data.updatedAt == request.time
+          && request.resource.data.paymentStatus == 'paid';
       allow delete: if false;
     }
 

@@ -6,7 +6,7 @@ import '../providers/cart_provider.dart';
 import '../services/order_service.dart';
 import 'checkout_screen.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   const CartScreen({
     required this.orderService,
     required this.userId,
@@ -15,6 +15,15 @@ class CartScreen extends StatelessWidget {
 
   final OrderService orderService;
   final String userId;
+
+  @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  final Set<String> _selectedIds = {};
+  final Set<String> _knownIds = {};
+  bool _selectionInitialized = false;
 
   @override
   Widget build(BuildContext context) {
@@ -35,13 +44,70 @@ class CartScreen extends StatelessWidget {
             );
           }
 
+          if (!_selectionInitialized) {
+            _selectedIds.addAll(cart.items.map((item) => item.product.id));
+            _knownIds.addAll(_selectedIds);
+            _selectionInitialized = true;
+          } else {
+            _selectedIds.removeWhere(
+              (id) => !cart.items.any((item) => item.product.id == id),
+            );
+            for (final item in cart.items) {
+              if (!_knownIds.contains(item.product.id)) {
+                _selectedIds.add(item.product.id);
+              }
+            }
+            _knownIds
+              ..clear()
+              ..addAll(cart.items.map((item) => item.product.id));
+          }
+
+          final selectedItems = cart.items
+              .where((item) => _selectedIds.contains(item.product.id))
+              .toList();
+          final allSelected = selectedItems.length == cart.items.length;
+
           return ListView.separated(
             padding: const EdgeInsets.all(16),
-            itemCount: cart.items.length,
+            itemCount: cart.items.length + 1,
             separatorBuilder: (_, _) => const SizedBox(height: 8),
             itemBuilder: (context, index) {
-              final item = cart.items[index];
-              return _CartProductTile(item: item);
+              if (index == 0) {
+                return CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  value: allSelected,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedIds
+                        ..clear()
+                        ..addAll(
+                          value == true
+                              ? cart.items.map((item) => item.product.id)
+                              : const <String>[],
+                        );
+                    });
+                  },
+                  title: Text(
+                    allSelected ? 'Deselect all' : 'Select all',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                );
+              }
+
+              final item = cart.items[index - 1];
+              return _CartProductTile(
+                item: item,
+                selected: _selectedIds.contains(item.product.id),
+                onSelected: (selected) {
+                  setState(() {
+                    if (selected == true) {
+                      _selectedIds.add(item.product.id);
+                    } else {
+                      _selectedIds.remove(item.product.id);
+                    }
+                  });
+                },
+              );
             },
           );
         },
@@ -49,6 +115,13 @@ class CartScreen extends StatelessWidget {
       bottomNavigationBar: Consumer<CartProvider>(
         builder: (context, cart, _) {
           if (cart.isEmpty) return const SizedBox.shrink();
+          final selectedItems = cart.items
+              .where((item) => _selectedIds.contains(item.product.id))
+              .toList();
+          final selectedTotal = selectedItems.fold<double>(
+            0,
+            (sum, item) => sum + item.product.price * item.quantity,
+          );
           return SafeArea(
             minimum: const EdgeInsets.all(16),
             child: Column(
@@ -62,7 +135,7 @@ class CartScreen extends StatelessWidget {
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      '₱${cart.total.toStringAsFixed(2)}',
+                      '₱${selectedTotal.toStringAsFixed(2)}',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -74,14 +147,17 @@ class CartScreen extends StatelessWidget {
                   width: double.infinity,
                   height: 50,
                   child: FilledButton(
-                    onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute<void>(
-                        builder: (_) => CheckoutScreen(
-                          orderService: orderService,
-                          userId: userId,
-                        ),
-                      ),
-                    ),
+                    onPressed: selectedItems.isEmpty
+                        ? null
+                        : () => Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (_) => CheckoutScreen(
+                                orderService: widget.orderService,
+                                userId: widget.userId,
+                                initialItems: selectedItems,
+                              ),
+                            ),
+                          ),
                     child: const Text('Continue to checkout'),
                   ),
                 ),
@@ -95,9 +171,15 @@ class CartScreen extends StatelessWidget {
 }
 
 class _CartProductTile extends StatelessWidget {
-  const _CartProductTile({required this.item});
+  const _CartProductTile({
+    required this.item,
+    required this.selected,
+    required this.onSelected,
+  });
 
   final CartItem item;
+  final bool selected;
+  final ValueChanged<bool?> onSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -107,6 +189,7 @@ class _CartProductTile extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         child: Row(
           children: [
+            Checkbox(value: selected, onChanged: onSelected),
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: SizedBox(

@@ -141,6 +141,24 @@ class _AdminOrderCard extends StatelessWidget {
     }
   }
 
+  Future<void> _markPaid(BuildContext context) async {
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      await orderService.updatePaymentStatus(order.id, 'paid');
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          const SnackBar(content: Text('Payment marked as paid.')),
+        );
+    } on FirebaseException catch (error) {
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(content: Text(error.message ?? 'Unable to update payment.')),
+        );
+    }
+  }
+
   List<Widget> _actions(BuildContext context) {
     switch (order.status) {
       case OrderStatus.pending:
@@ -237,6 +255,14 @@ class _AdminOrderCard extends StatelessWidget {
                   : Icons.storefront_outlined,
               order.isDelivery ? 'Delivery' : 'Pickup',
             ),
+            _infoRow(
+              order.paymentMethod == 'online'
+                  ? Icons.payments_outlined
+                  : Icons.storefront_outlined,
+              order.paymentMethod == 'online'
+                  ? 'Xendit online - ${order.paymentStatusLabel}'
+                  : 'Pay at store - ${order.paymentStatusLabel}',
+            ),
             if (order.isDelivery && order.address.isNotEmpty)
               _infoRow(Icons.location_on_outlined, order.address),
             const Divider(height: 24),
@@ -264,6 +290,18 @@ class _AdminOrderCard extends StatelessWidget {
                 ),
               ],
             ),
+            if (order.paymentMethod == 'pay_at_store' &&
+                order.paymentStatus != 'paid') ...[
+              const SizedBox(height: 8),
+              Align(
+                alignment: Alignment.centerRight,
+                child: OutlinedButton.icon(
+                  onPressed: () => _markPaid(context),
+                  icon: const Icon(Icons.check_circle_outline),
+                  label: const Text('Mark payment paid'),
+                ),
+              ),
+            ],
             if (actions.isNotEmpty) ...[
               const SizedBox(height: 12),
               Align(

@@ -138,6 +138,25 @@ class _OrderCard extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Icon(
+                  order.paymentMethod == 'online'
+                      ? Icons.payments_outlined
+                      : Icons.storefront_outlined,
+                  size: 18,
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    order.paymentMethod == 'online'
+                        ? 'Online payment - ${order.paymentStatusLabel}'
+                        : 'Pay at store - ${order.paymentStatusLabel}',
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),

@@ -12,7 +12,7 @@ class OrderService {
   CollectionReference<Map<String, dynamic>> get _orders =>
       _firestore.collection('orders');
 
-  Future<void> saveOrder({
+  Future<String> saveOrder({
     required String userId,
     required String customerName,
     required String phone,
@@ -20,8 +20,9 @@ class OrderService {
     required String address,
     required List<CartItem> items,
     required double total,
+    required String paymentMethod,
   }) async {
-    await _orders.add({
+    final doc = await _orders.add({
       'userId': userId,
       'customerName': customerName,
       'phone': phone,
@@ -40,8 +41,14 @@ class OrderService {
       'total': total,
       'currency': 'PHP',
       'status': OrderStatus.pending,
+      'paymentMethod': paymentMethod,
+      'paymentStatus': paymentMethod == PaymentMethod.online
+          ? PaymentStatus.pending
+          : PaymentStatus.unpaid,
+      'xenditInvoiceId': '',
       'createdAt': FieldValue.serverTimestamp(),
     });
+    return doc.id;
   }
 
   /// A customer's own orders, newest first.
@@ -64,12 +71,20 @@ class OrderService {
     });
   }
 
+  Future<void> updatePaymentStatus(String orderId, String paymentStatus) {
+    return _orders.doc(orderId).update({
+      'paymentStatus': paymentStatus,
+      'paymentPaidAt': paymentStatus == PaymentStatus.paid
+          ? FieldValue.serverTimestamp()
+          : FieldValue.delete(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+  }
+
   List<ShopOrder> _toSortedOrders(QuerySnapshot<Map<String, dynamic>> snap) {
     final orders = snap.docs.map(ShopOrder.fromDoc).toList();
     final now = DateTime.now();
-    orders.sort(
-      (a, b) => (b.createdAt ?? now).compareTo(a.createdAt ?? now),
-    );
+    orders.sort((a, b) => (b.createdAt ?? now).compareTo(a.createdAt ?? now));
     return orders;
   }
 }

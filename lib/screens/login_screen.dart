@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../services/auth_service.dart';
@@ -206,7 +207,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               height: 52,
                               child: OutlinedButton.icon(
                                 onPressed: _loading ? null : _loginWithGoogle,
-                                icon: const Icon(Icons.g_mobiledata, size: 30),
+                                icon: SvgPicture.asset(
+                                  'assets/images/google_g_logo.svg',
+                                  width: 24,
+                                  height: 24,
+                                ),
                                 label: const Text('Continue with Google'),
                               ),
                             ),

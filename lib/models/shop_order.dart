@@ -8,6 +8,19 @@ class OrderStatus {
   static const declined = 'declined';
 }
 
+class PaymentMethod {
+  static const online = 'online';
+  static const payAtStore = 'pay_at_store';
+}
+
+class PaymentStatus {
+  static const unpaid = 'unpaid';
+  static const pending = 'pending';
+  static const paid = 'paid';
+  static const expired = 'expired';
+  static const refunded = 'refunded';
+}
+
 class OrderLine {
   const OrderLine({
     required this.name,
@@ -32,6 +45,9 @@ class ShopOrder {
     required this.total,
     required this.items,
     required this.createdAt,
+    this.paymentMethod = PaymentMethod.payAtStore,
+    this.paymentStatus = PaymentStatus.unpaid,
+    this.xenditInvoiceId = '',
   });
 
   final String id;
@@ -44,8 +60,26 @@ class ShopOrder {
   final double total;
   final List<OrderLine> items;
   final DateTime? createdAt;
+  final String paymentMethod;
+  final String paymentStatus;
+  final String xenditInvoiceId;
 
   bool get isDelivery => fulfillment == 'delivery';
+
+  String get paymentStatusLabel {
+    switch (paymentStatus) {
+      case PaymentStatus.paid:
+        return 'Paid';
+      case PaymentStatus.pending:
+        return 'Payment pending';
+      case PaymentStatus.expired:
+        return 'Payment expired';
+      case PaymentStatus.refunded:
+        return 'Refunded';
+      default:
+        return 'Unpaid';
+    }
+  }
 
   String get shortId =>
       id.length <= 6 ? id.toUpperCase() : id.substring(0, 6).toUpperCase();
@@ -95,6 +129,9 @@ class ShopOrder {
         );
       }).toList(),
       createdAt: (d['createdAt'] as Timestamp?)?.toDate(),
+      paymentMethod: d['paymentMethod'] as String? ?? PaymentMethod.payAtStore,
+      paymentStatus: d['paymentStatus'] as String? ?? PaymentStatus.unpaid,
+      xenditInvoiceId: d['xenditInvoiceId'] as String? ?? '',
     );
   }
 }

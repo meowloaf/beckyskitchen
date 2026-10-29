@@ -11,11 +11,6 @@ const _accent = Color(0xFF8B0000);
 const _sunshine = Color(0xFFFFD700);
 const _line = Color(0xFFE9D9D9);
 
-final _searchBorder = OutlineInputBorder(
-  borderRadius: BorderRadius.circular(16),
-  borderSide: const BorderSide(color: _line),
-);
-
 class HomeTab extends StatefulWidget {
   const HomeTab({required this.onOpenTab, this.showAppBar = true, super.key});
 
@@ -28,8 +23,6 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
-  final _search = TextEditingController();
-  String _query = '';
   String? _category;
 
   String get _greeting {
@@ -37,12 +30,6 @@ class _HomeTabState extends State<HomeTab> {
     if (hour < 12) return 'Good morning!';
     if (hour < 18) return 'Good afternoon!';
     return 'Good evening!';
-  }
-
-  @override
-  void dispose() {
-    _search.dispose();
-    super.dispose();
   }
 
   @override
@@ -109,33 +96,6 @@ class _HomeTabState extends State<HomeTab> {
                 style: const TextStyle(color: Color(0xFF625454)),
               ),
               const SizedBox(height: 14),
-              TextField(
-                controller: _search,
-                onChanged: (value) => setState(() => _query = value),
-                decoration: InputDecoration(
-                  hintText: 'Search your favorite pastries...',
-                  prefixIcon: const Icon(Icons.search),
-                  suffixIcon: _query.isEmpty
-                      ? null
-                      : IconButton(
-                          tooltip: 'Clear search',
-                          icon: const Icon(Icons.close),
-                          onPressed: () {
-                            _search.clear();
-                            setState(() => _query = '');
-                          },
-                        ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 16),
-                  border: _searchBorder,
-                  enabledBorder: _searchBorder,
-                  focusedBorder: _searchBorder.copyWith(
-                    borderSide: const BorderSide(color: _accent, width: 1.5),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
               const KitchenBanner(),
               const SizedBox(height: 22),
               Row(
@@ -185,7 +145,7 @@ class _HomeTabState extends State<HomeTab> {
                 ),
               ),
               const SizedBox(height: 12),
-              ProductGrid(category: _category, query: _query, shrinkWrap: true),
+              ProductGrid(category: _category, shrinkWrap: true),
             ],
           ),
         ),
