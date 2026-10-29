@@ -1,59 +1,244 @@
-# beckyskitchen
+# Becky's Kitchen
 
-A new Flutter project.
+<div align="center">
 
-Admin access is managed with an `admins/{uid}` document in Firestore. The
-Firestore rules allow admins to manage products and orders, but prevent app
-users from granting themselves admin access.
+**Fresh food, simple ordering, and kitchen-made happiness - all in one app.**
 
-## Give an account admin access
+A mobile storefront and order management app built for Becky's Kitchen with Flutter, Firebase, Supabase, and Xendit.
 
-1. **Create and sign in to the account** in the app.
-2. In Firebase Console, open **Authentication → Users** and copy that
-   account's UID.
-3. Open **Firestore Database → Data**, create a collection named `admins`,
-   then create a document whose document ID is the account's UID. Add this field:
+</div>
 
-   | Field | Type | Value |
-   |---|---|---|
-   | `enabled` | boolean | `true` |
+---
 
-4. **Deploy the Firestore rules** from this repository if you have not already.
-   Install the Firebase CLI, sign in, and deploy:
+## About the App
 
-   ```sh
-   npm install -g firebase-tools
-   firebase login
-   firebase deploy --only firestore:rules --project becky-s-kitchen-e-commerce
-   ```
+Becky's Kitchen lets customers browse the menu, build a cart, select exactly what they want to checkout, choose a payment method, and track their orders. Administrators can manage the menu and update order and payment statuses from the app.
 
-5. Return to the app and open the **Profile** tab. The admin controls should
-   appear; the app watches this document for changes.
+## Features
 
-To revoke access, delete the user's document from the `admins` collection or set
-`enabled` to `false`. Only trusted project administrators should edit this
-collection in the Firebase Console; app users are explicitly denied writes.
+- Email and Google authentication
+- Customer profiles
+- Product categories and menu browsing
+- Selectable cart items with live totals
+- Checkout for selected items only
+- Xendit online payment
+- Pay-at-store payment option
+- Order and payment status tracking
+- Firebase-backed products and orders
+- Supabase Edge Functions for secure Xendit invoice processing
+- Admin product and order management
 
-The rules allow public product reads, restrict product changes and order
-management to admins, and limit customers to creating and reading their own
-orders. Hiding admin controls in the app is not a security boundary.
+## Tech Stack
 
-Order records are submitted by the customer app. These rules restrict who can
-create and read them, but they cannot verify that submitted item prices and
-totals match the current product catalog. For paid orders or automatic
-fulfillment, calculate and validate order totals in a trusted backend before
-treating them as authoritative.
+| Layer | Technology |
+|---|---|
+| Mobile app | Flutter |
+| Authentication | Firebase Authentication |
+| Database and app data | Cloud Firestore |
+| Online payments | Xendit |
+| Payment backend | Supabase Edge Functions |
+| Payment records | Supabase PostgreSQL |
+| State management | Provider |
 
-## Getting Started
+## Project Structure
 
-This project is a starting point for a Flutter application.
+```text
+lib/
+  models/                 App data models
+  screens/                Customer and admin screens
+  services/               Firebase and Xendit services
+  widgets/                Reusable UI components
+supabase/
+  functions/              Secure Xendit invoice and webhook functions
+  migrations/             Supabase database migrations
+android/
+  app/                    Android configuration and launcher assets
+```
 
-A few resources to get you started if this is your first Flutter project:
+## Prerequisites
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+Before running the project, install:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Flutter SDK 3.44 or compatible
+- Dart SDK 3.12.2 or newer within the project constraint
+- Android Studio and Android SDK
+- Firebase CLI
+- Supabase CLI
+- Node.js, if using Firebase CLI or Supabase tooling
+
+Confirm Flutter is ready:
+
+```powershell
+flutter doctor
+```
+
+## First-Time Setup
+
+### 1. Clone the repository
+
+```powershell
+git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
+cd YOUR_REPOSITORY
+flutter pub get
+```
+
+### 2. Configure Firebase
+
+Place the Firebase Android configuration file at:
+
+```text
+android/app/google-services.json
+```
+
+The existing Firebase project uses:
+
+```text
+becky-s-kitchen-e-commerce
+```
+
+### 3. Configure client environment values
+
+Copy the example file:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Add your public Supabase values to `.env`:
+
+```env
+SUPABASE_URL=https://YOUR_PROJECT_ID.supabase.co
+SUPABASE_PUBLISHABLE_KEY=YOUR_SUPABASE_PUBLISHABLE_KEY
+```
+
+The `.env` file is ignored by Git. Never add private keys to this file.
+
+Run the app using the environment file:
+
+```powershell
+flutter run --dart-define-from-file=.env
+```
+
+## Supabase and Xendit Setup
+
+Supabase service-role credentials, Xendit credentials, and webhook secrets belong in **Supabase Edge Function secrets** - never in Flutter, `.env.example`, or the APK.
+
+### Create the database
+
+Push the migration:
+
+```powershell
+supabase login
+supabase link --project-ref YOUR_PROJECT_ID
+supabase db push
+```
+
+### Set backend secrets
+
+```powershell
+supabase secrets set SUPABASE_URL="https://YOUR_PROJECT_ID.supabase.co"
+supabase secrets set SUPABASE_SERVICE_ROLE_KEY="YOUR_SUPABASE_SERVICE_ROLE_KEY"
+supabase secrets set XENDIT_SECRET_KEY="YOUR_XENDIT_SECRET_KEY"
+supabase secrets set XENDIT_CALLBACK_TOKEN="YOUR_XENDIT_CALLBACK_TOKEN"
+```
+
+The `XENDIT_CALLBACK_TOKEN` must match the verification token configured in the Xendit webhook settings.
+
+### Deploy the Edge Functions
+
+```powershell
+supabase functions deploy create-xendit-invoice
+supabase functions deploy xendit-webhook
+```
+
+Register the webhook endpoint in Xendit using:
+
+```text
+https://YOUR_PROJECT_ID.supabase.co/functions/v1/xendit-webhook
+```
+
+## Firestore Setup
+
+Deploy the security rules:
+
+```powershell
+firebase login
+firebase deploy --only firestore:rules --project becky-s-kitchen-e-commerce
+```
+
+### Grant admin access
+
+1. Create or sign in to a user account in the app.
+2. Copy the user's UID from Firebase Authentication.
+3. In Firestore, create this document:
+
+```text
+admins/{USER_UID}
+```
+
+4. Add the field:
+
+| Field | Type | Value |
+|---|---|---|
+| `enabled` | Boolean | `true` |
+
+Delete the document or change `enabled` to `false` to revoke admin access.
+
+> Admin controls are convenience UI. Firestore security rules are the real authorization boundary.
+
+## Run the App
+
+Development:
+
+```powershell
+flutter run --dart-define-from-file=.env
+```
+
+Check for issues:
+
+```powershell
+flutter analyze
+```
+
+## Build a Release APK
+
+```powershell
+flutter build apk --release --dart-define-from-file=.env
+```
+
+The release APK will be generated at:
+
+```text
+build/app/outputs/flutter-apk/app-release.apk
+```
+
+## Security Notes
+
+- `.env` contains local configuration and is excluded from Git.
+- Publishable Supabase keys are intended for client applications.
+- Supabase service-role and Xendit secret keys must stay server-side.
+- Never commit signing keystores, `key.properties`, service-account files, or private API tokens.
+- Production order totals should be validated by a trusted backend before fulfillment.
+
+## Payment Flow
+
+```text
+Flutter app
+    -> Supabase create-xendit-invoice function
+    -> Xendit creates an invoice
+    -> Customer completes payment
+    -> Xendit sends a webhook
+    -> Supabase webhook function updates payment records
+```
+
+## Contributing
+
+1. Create a new branch
+2. Make focused changes
+3. Run `flutter analyze`
+4. Test the affected user and admin flows
+5. Open a pull request
+
+## License
+
+Add your preferred license before publishing the project publicly.
