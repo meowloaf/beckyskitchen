@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../services/auth_service.dart';
+import '../widgets/kitchen_logo.dart';
 import 'login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -60,7 +61,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8F1),
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) => SingleChildScrollView(
@@ -74,10 +74,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   constraints: const BoxConstraints(maxWidth: 420),
                   child: Card(
                     color: Colors.white,
-                    elevation: 2,
-                    shadowColor: Colors.brown.withValues(alpha: 0.08),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(24),
+                      side: const BorderSide(color: Color(0xFFE9D9D9)),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(28),
@@ -86,19 +85,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Container(
-                              width: 140,
-                              height: 140,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFFFE9D5),
-                                borderRadius: BorderRadius.circular(24),
-                              ),
-                              child: const Icon(
-                                Icons.bakery_dining_outlined,
-                                size: 76,
-                                color: Color(0xFFB9682D),
-                              ),
-                            ),
+                            const KitchenLogo(size: 140),
                             const SizedBox(height: 24),
                             Text(
                               'Create account',
@@ -109,7 +96,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             Text(
                               'Create an account to get started.',
                               textAlign: TextAlign.center,
-                              style: TextStyle(color: Colors.brown.shade400),
+                              style: const TextStyle(color: Color(0xFF625454)),
                             ),
                             const SizedBox(height: 28),
                             TextFormField(
@@ -251,16 +238,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 }
 
 InputDecoration _inputDecoration(String label, IconData icon) {
-  return InputDecoration(
-    labelText: label,
-    prefixIcon: Icon(icon),
-    filled: true,
-    fillColor: const Color(0xFFFFFAF5),
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(14),
-      borderSide: BorderSide.none,
-    ),
-  );
+  return InputDecoration(labelText: label, prefixIcon: Icon(icon));
 }
 
 String? _validateEmail(String? value) {
@@ -272,7 +250,7 @@ String? _validateEmail(String? value) {
 }
 
 const ButtonStyle _primaryButtonStyle = ButtonStyle(
-  backgroundColor: WidgetStatePropertyAll(Color(0xFFB9682D)),
+  backgroundColor: WidgetStatePropertyAll(Color(0xFF8B0000)),
   shape: WidgetStatePropertyAll(
     RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(14))),
   ),

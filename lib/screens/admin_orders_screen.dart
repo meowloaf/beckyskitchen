@@ -15,18 +15,18 @@ class AdminOrdersScreen extends StatefulWidget {
 }
 
 class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
-  late final Stream<List<ShopOrder>> _orders =
-      widget.orderService.watchAllOrders();
+  late final Stream<List<ShopOrder>> _orders = widget.orderService
+      .watchAllOrders();
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        backgroundColor: const Color(0xFFFFFAF5),
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: const Text('Manage orders'),
-          backgroundColor: const Color(0xFFFFFAF5),
+          backgroundColor: Colors.white,
           surfaceTintColor: Colors.transparent,
           bottom: const TabBar(
             tabs: [
@@ -93,10 +93,8 @@ class _OrderList extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       itemCount: orders.length,
       separatorBuilder: (_, _) => const SizedBox(height: 12),
-      itemBuilder: (context, index) => _AdminOrderCard(
-        order: orders[index],
-        orderService: orderService,
-      ),
+      itemBuilder: (context, index) =>
+          _AdminOrderCard(order: orders[index], orderService: orderService),
     );
   }
 }
@@ -186,7 +184,7 @@ class _AdminOrderCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 16, color: Colors.brown.shade400),
+          Icon(icon, size: 16, color: const Color(0xFF625454)),
           const SizedBox(width: 6),
           Expanded(child: Text(text)),
         ],
@@ -204,7 +202,7 @@ class _AdminOrderCard extends StatelessWidget {
       color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: Color(0xFFF0E5DA)),
+        side: const BorderSide(color: Color(0xFFE9D9D9)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -227,7 +225,7 @@ class _AdminOrderCard extends StatelessWidget {
             ),
             Text(
               order.createdLabel,
-              style: TextStyle(fontSize: 12, color: Colors.brown.shade400),
+              style: const TextStyle(fontSize: 12, color: Color(0xFF625454)),
             ),
             const SizedBox(height: 8),
             _infoRow(Icons.person_outline, order.customerName),
@@ -248,9 +246,7 @@ class _AdminOrderCard extends StatelessWidget {
                 child: Row(
                   children: [
                     Expanded(child: Text('${line.quantity} × ${line.name}')),
-                    Text(
-                      '₱${(line.price * line.quantity).toStringAsFixed(2)}',
-                    ),
+                    Text('₱${(line.price * line.quantity).toStringAsFixed(2)}'),
                   ],
                 ),
               ),

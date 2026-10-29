@@ -4,11 +4,12 @@ import 'package:provider/provider.dart';
 import '../models/categories.dart';
 import '../providers/cart_provider.dart';
 import '../widgets/kitchen_banner.dart';
+import '../widgets/kitchen_logo.dart';
 import 'product_grid.dart';
 
-const _accent = Color(0xFF8B1A1A);
-const _cream = Color(0xFFFFF8F1);
-const _line = Color(0xFFF0E5DA);
+const _accent = Color(0xFF8B0000);
+const _sunshine = Color(0xFFFFD700);
+const _line = Color(0xFFE9D9D9);
 
 final _searchBorder = OutlineInputBorder(
   borderRadius: BorderRadius.circular(16),
@@ -16,10 +17,11 @@ final _searchBorder = OutlineInputBorder(
 );
 
 class HomeTab extends StatefulWidget {
-  const HomeTab({required this.onOpenTab, super.key});
+  const HomeTab({required this.onOpenTab, this.showAppBar = true, super.key});
 
   /// Switches the bottom navigation tab (1 = Categories, 2 = Cart, 4 = Profile).
   final ValueChanged<int> onOpenTab;
+  final bool showAppBar;
 
   @override
   State<HomeTab> createState() => _HomeTabState();
@@ -48,38 +50,46 @@ class _HomeTabState extends State<HomeTab> {
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      backgroundColor: _cream,
-      appBar: AppBar(
-        backgroundColor: _cream,
-        surfaceTintColor: Colors.transparent,
-        title: const Text(
-          "Becky's Kitchen",
-          style: TextStyle(
-            color: Color(0xFFB8860B),
-            fontStyle: FontStyle.italic,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        actions: [
-          Consumer<CartProvider>(
-            builder: (context, cart, _) => IconButton(
-              tooltip: 'Cart',
-              onPressed: () => widget.onOpenTab(2),
-              icon: Badge(
-                isLabelVisible: cart.itemCount > 0,
-                label: Text('${cart.itemCount}'),
-                child: const Icon(Icons.shopping_bag_outlined),
+      backgroundColor: Colors.white,
+      appBar: widget.showAppBar
+          ? AppBar(
+              title: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  KitchenLogo(size: 38),
+                  SizedBox(width: 10),
+                  Text(
+                    "Becky's Kitchen",
+                    style: TextStyle(
+                      color: _accent,
+                      fontFamily: 'cursive',
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ),
-          IconButton(
-            tooltip: 'Profile',
-            onPressed: () => widget.onOpenTab(4),
-            icon: const Icon(Icons.account_circle_outlined),
-          ),
-          const SizedBox(width: 4),
-        ],
-      ),
+              actions: [
+                Consumer<CartProvider>(
+                  builder: (context, cart, _) => IconButton(
+                    tooltip: 'Cart',
+                    onPressed: () => widget.onOpenTab(2),
+                    icon: Badge(
+                      isLabelVisible: cart.itemCount > 0,
+                      label: Text('${cart.itemCount}'),
+                      child: const Icon(Icons.shopping_bag_outlined),
+                    ),
+                  ),
+                ),
+                IconButton(
+                  tooltip: 'Profile',
+                  onPressed: () => widget.onOpenTab(4),
+                  icon: const Icon(Icons.account_circle_outlined),
+                ),
+                const SizedBox(width: 4),
+              ],
+            )
+          : null,
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1120),
@@ -90,13 +100,13 @@ class _HomeTabState extends State<HomeTab> {
                 _greeting,
                 style: textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: const Color(0xFF39251B),
+                  color: _accent,
                 ),
               ),
               const SizedBox(height: 2),
               Text(
                 'What are you craving today?',
-                style: TextStyle(color: Colors.brown.shade400),
+                style: const TextStyle(color: Color(0xFF625454)),
               ),
               const SizedBox(height: 14),
               TextField(
@@ -121,10 +131,7 @@ class _HomeTabState extends State<HomeTab> {
                   border: _searchBorder,
                   enabledBorder: _searchBorder,
                   focusedBorder: _searchBorder.copyWith(
-                    borderSide: const BorderSide(
-                      color: Color(0xFFB9682D),
-                      width: 1.5,
-                    ),
+                    borderSide: const BorderSide(color: _accent, width: 1.5),
                   ),
                 ),
               ),
@@ -201,12 +208,10 @@ class _CategoryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: selected ? const Color(0xFFFFE9D5) : Colors.white,
+      color: selected ? _sunshine : Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(18),
-        side: BorderSide(
-          color: selected ? const Color(0xFFB9682D) : _line,
-        ),
+        side: BorderSide(color: selected ? _accent : _line),
       ),
       child: InkWell(
         onTap: onTap,

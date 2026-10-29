@@ -19,15 +19,15 @@ class OrdersScreen extends StatefulWidget {
 }
 
 class _OrdersScreenState extends State<OrdersScreen> {
-  late final Stream<List<ShopOrder>> _orders =
-      widget.orderService.watchUserOrders(widget.userId);
+  late final Stream<List<ShopOrder>> _orders = widget.orderService
+      .watchUserOrders(widget.userId);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8F1),
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFFFF8F1),
+        backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         title: const Text(
           'My orders',
@@ -107,7 +107,7 @@ class _OrderCard extends StatelessWidget {
             const SizedBox(height: 2),
             Text(
               order.createdLabel,
-              style: TextStyle(fontSize: 12, color: Colors.brown.shade400),
+              style: const TextStyle(fontSize: 12, color: Color(0xFF625454)),
             ),
             const Divider(height: 20),
             for (final line in order.items)
@@ -116,9 +116,7 @@ class _OrderCard extends StatelessWidget {
                 child: Row(
                   children: [
                     Expanded(child: Text('${line.quantity} × ${line.name}')),
-                    Text(
-                      '₱${(line.price * line.quantity).toStringAsFixed(2)}',
-                    ),
+                    Text('₱${(line.price * line.quantity).toStringAsFixed(2)}'),
                   ],
                 ),
               ),

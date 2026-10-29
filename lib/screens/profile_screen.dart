@@ -50,12 +50,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
     final displayName = (user?.displayName ?? '').trim();
-    final title = displayName.isNotEmpty ? displayName : (user?.email ?? 'Guest');
+    final title = displayName.isNotEmpty
+        ? displayName
+        : (user?.email ?? 'Guest');
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8F1),
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFFFF8F1),
+        backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         title: const Text(
           'Profile',
@@ -68,12 +70,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Center(
             child: CircleAvatar(
               radius: 40,
-              backgroundColor: const Color(0xFFFFE9D5),
+              backgroundColor: const Color(0xFFFFD700),
               child: Text(
                 title.characters.first.toUpperCase(),
                 style: const TextStyle(
                   fontSize: 32,
-                  color: Color(0xFFB9682D),
+                  color: Color(0xFF8B0000),
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -83,22 +85,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(context).textTheme.titleLarge
+                ?.copyWith(fontWeight: FontWeight.bold),
           ),
           if (user?.email != null)
             Text(
               user!.email!,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.brown.shade400),
+              style: const TextStyle(color: Color(0xFF625454)),
             ),
           const SizedBox(height: 24),
           StreamBuilder<bool>(
             stream: _isAdmin,
             builder: (context, snapshot) {
-              if (snapshot.hasError) return Text('Admin check error: ${snapshot.error}');
-if (snapshot.data != true) return Text('Not admin. uid: ${user?.uid}');
+              if (snapshot.hasError) {
+                return Text('Admin check error: ${snapshot.error}');
+              }
+              if (snapshot.data != true) return const SizedBox.shrink();
               return Padding(
                 padding: const EdgeInsets.only(bottom: 16),
                 child: Card(
@@ -148,8 +151,8 @@ class _ManageOrdersTile extends StatefulWidget {
 }
 
 class _ManageOrdersTileState extends State<_ManageOrdersTile> {
-  late final Stream<List<ShopOrder>> _orders =
-      widget.orderService.watchAllOrders();
+  late final Stream<List<ShopOrder>> _orders = widget.orderService
+      .watchAllOrders();
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,4 @@
-  import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 class KitchenBanner extends StatelessWidget {
   const KitchenBanner({super.key});
@@ -20,7 +20,7 @@ class KitchenBanner extends StatelessWidget {
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Color(0xFF39251B), Color(0xFF684126)],
+                        colors: [Color(0xFF8B0000), Color(0xFF5F0000)],
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
                       ),
@@ -47,7 +47,7 @@ class KitchenBanner extends StatelessWidget {
                     height: 260,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: const Color(0xFFD98B4B).withValues(alpha: 0.2),
+                      color: const Color(0xFFFFD700).withValues(alpha: 0.2),
                     ),
                   ),
                 ),
@@ -79,7 +79,7 @@ class KitchenBanner extends StatelessWidget {
                                     ? 'MADE FRESH'
                                     : 'MADE FRESH, MADE WITH LOVE',
                                 style: const TextStyle(
-                                  color: Color(0xFFFFDDBB),
+                                  color: Color(0xFFFFD700),
                                   fontSize: 10,
                                   fontWeight: FontWeight.w700,
                                   letterSpacing: 1.1,
@@ -113,10 +113,10 @@ class KitchenBanner extends StatelessWidget {
                           width: 116,
                           height: 132,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFFE9D5),
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(58),
                             border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.45),
+                              color: const Color(0xFFFFD700),
                               width: 4,
                             ),
                             boxShadow: [
@@ -127,10 +127,11 @@ class KitchenBanner extends StatelessWidget {
                               ),
                             ],
                           ),
-                          child: const Icon(
-                            Icons.bakery_dining,
-                            size: 62,
-                            color: Color(0xFFB9682D),
+                          clipBehavior: Clip.antiAlias,
+                          child: Image.asset(
+                            'assets/images/beckys_kitchen_logo.png',
+                            fit: BoxFit.contain,
+                            semanticLabel: "Becky's Kitchen logo",
                           ),
                         ),
                       ],

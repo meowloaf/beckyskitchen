@@ -30,8 +30,8 @@ class ProductGrid extends StatefulWidget {
 }
 
 class _ProductGridState extends State<ProductGrid> {
-  late final Stream<List<Product>> _stream =
-      widget.productService.watchProducts();
+  late final Stream<List<Product>> _stream = widget.productService
+      .watchProducts();
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +64,9 @@ class _ProductGridState extends State<ProductGrid> {
           return Padding(
             padding: const EdgeInsets.all(32),
             child: Center(
-              child: Text(all.isEmpty ? 'No products yet' : 'No products found'),
+              child: Text(
+                all.isEmpty ? 'No products yet' : 'No products found',
+              ),
             ),
           );
         }
@@ -100,8 +102,8 @@ class ProductCard extends StatelessWidget {
       elevation: 0,
       color: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-        side: const BorderSide(color: Color(0xFFF0E5DA)),
+        borderRadius: BorderRadius.circular(16),
+        side: const BorderSide(color: Color(0xFFE9D9D9)),
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
@@ -110,12 +112,12 @@ class ProductCard extends StatelessWidget {
           Expanded(
             child: SizedBox.expand(
               child: ColoredBox(
-                color: const Color(0xFFFFF3E8),
+                color: const Color(0xFFFFF9E6),
                 child: product.imageUrl.isEmpty
                     ? const Icon(
                         Icons.fastfood_outlined,
                         size: 48,
-                        color: Color(0xFFB9682D),
+                        color: Color(0xFF8B0000),
                       )
                     : Image.network(
                         product.imageUrl,
@@ -124,7 +126,7 @@ class ProductCard extends StatelessWidget {
                             const Icon(
                               Icons.broken_image_outlined,
                               size: 48,
-                              color: Color(0xFFB9682D),
+                              color: Color(0xFF8B0000),
                             ),
                       ),
               ),
@@ -142,7 +144,7 @@ class ProductCard extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF39251B),
+                    color: Color(0xFF2D2020),
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -153,7 +155,7 @@ class ProductCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.brown.shade400,
+                      color: const Color(0xFF625454),
                     ),
                   ),
                 const SizedBox(height: 8),
@@ -172,7 +174,7 @@ class ProductCard extends StatelessWidget {
                         );
                     },
                     style: FilledButton.styleFrom(
-                      backgroundColor: const Color(0xFFB9682D),
+                      backgroundColor: const Color(0xFF8B0000),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),

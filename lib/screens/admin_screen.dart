@@ -63,14 +63,14 @@ class AdminScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFAF5),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Manage products'),
-        backgroundColor: const Color(0xFFFFFAF5),
+        backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
       ),
       floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: const Color(0xFFB9682D),
+        backgroundColor: const Color(0xFF8B0000),
         foregroundColor: Colors.white,
         onPressed: () => _addProduct(context),
         icon: const Icon(Icons.add),
@@ -96,15 +96,16 @@ class AdminScreen extends StatelessWidget {
             separatorBuilder: (_, _) => const SizedBox(height: 8),
             itemBuilder: (context, index) {
               final product = products[index];
-              final category =
-                  product.category.isEmpty ? 'No category' : product.category;
+              final category = product.category.isEmpty
+                  ? 'No category'
+                  : product.category;
               return Card(
                 margin: EdgeInsets.zero,
                 elevation: 0,
                 color: Colors.white,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  side: const BorderSide(color: Color(0xFFF0E5DA)),
+                  borderRadius: BorderRadius.circular(16),
+                  side: const BorderSide(color: Color(0xFFE9D9D9)),
                 ),
                 child: ListTile(
                   leading: ClipRRect(
@@ -114,7 +115,7 @@ class AdminScreen extends StatelessWidget {
                       height: 48,
                       child: product.imageUrl.isEmpty
                           ? const ColoredBox(
-                              color: Color(0xFFFFF3E8),
+                              color: Color(0xFFFFF9E6),
                               child: Icon(Icons.fastfood_outlined),
                             )
                           : Image.network(
@@ -122,7 +123,7 @@ class AdminScreen extends StatelessWidget {
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) =>
                                   const ColoredBox(
-                                    color: Color(0xFFFFF3E8),
+                                    color: Color(0xFFFFF9E6),
                                     child: Icon(Icons.broken_image_outlined),
                                   ),
                             ),

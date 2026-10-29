@@ -16,9 +16,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8F1),
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFFFF8F1),
+        backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         title: const Text(
           'Categories',
